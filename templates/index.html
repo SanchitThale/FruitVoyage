@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<section class="hero container">
+
+    <div class="hero-copy">
+        <div class="eyebrow">
+            A little taste of somewhere special
+        </div>
+
+        <h1>
+            Good food starts with
+            <span>great produce.</span>
+        </h1>
+
+        <p>
+            Explore beautiful imported fruits and flavourful
+            favourites, selected to bring joy to your table.
+        </p>
+
+        <div class="hero-actions">
+            <a class="btn" href="{{ url_for('shop') }}">
+                Explore the collection →
+            </a>
+
+            <a class="btn secondary"
+               href="{{ url_for('about') }}">
+                Our story
+            </a>
+        </div>
+    </div>
+
+    <div class="hero-art" aria-hidden="true">
+        <div class="orbit">
+            <span>🍎</span>
+            <span>🧀</span>
+        </div>
+
+        <div class="hero-orb">🍊</div>
+    </div>
+
+</section>
+
+<section class="section container">
+
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">Handpicked for you</div>
+            <h2>Fresh from our selection</h2>
+        </div>
+
+        <a class="text-link" href="{{ url_for('shop') }}">
+            View all products →
+        </a>
+    </div>
+
+    <div class="product-grid">
+        {% for p in featured %}
+            {% include "_card.html" %}
+        {% else %}
+            <p>No products available yet.</p>
+        {% endfor %}
+    </div>
+
+</section>
+
+<section class="section container">
+
+    <div class="section-head">
+        <div>
+            <div class="eyebrow">Why shop with us</div>
+            <h2>Simple things, done well.</h2>
+        </div>
+    </div>
+
+    <div class="benefits">
+
+        <article class="benefit reveal">
+            <div class="icon">🌍</div>
+            <h3>Global selection</h3>
+            <p>
+                Discover produce and speciality foods
+                inspired by growers around the world.
+            </p>
+        </article>
+
+        <article class="benefit reveal">
+            <div class="icon">🍎</div>
+            <h3>Carefully selected</h3>
+            <p>
+                Explore products with detailed descriptions
+                and photographs.
+            </p>
+        </article>
+
+        <article class="benefit reveal">
+            <div class="icon">💛</div>
+            <h3>Made for sharing</h3>
+            <p>
+                Bring something colourful and delicious
+                to your home and table.
+            </p>
+        </article>
+
+    </div>
+
+</section>
+
+<section class="container section">
+    <div class="banner">
+        <div>
+            <h2>Find your next favourite.</h2>
+            <p>Browse the collection and discover something new.</p>
+        </div>
+
+        <a class="btn" href="{{ url_for('shop') }}">
+            Shop the collection →
+        </a>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,60 @@
+<article class="product-card reveal">
+
+    <a href="{{ url_for('product', product_id=p['id']) }}">
+        <div class="product-image">
+
+            {% if p['image'] %}
+                <img
+                    src="{{ url_for('static', filename=p['image']) }}"
+                    alt="{{ p['name'] }}"
+                    loading="lazy"
+                >
+            {% else %}
+                <div class="image-placeholder">
+                    {{ '🧀' if p['category'] == 'cheese' else '🍎' }}
+                </div>
+            {% endif %}
+
+            <span class="tag">{{ p['category'] }}</span>
+
+        </div>
+    </a>
+
+    <div class="product-info">
+
+        <a href="{{ url_for('product', product_id=p['id']) }}">
+            <h3>{{ p['name'] }}</h3>
+        </a>
+
+        <div class="origin">
+            {{ p['origin'] or 'Carefully selected' }}
+        </div>
+
+        <p>{{ p['description'] or '' }}</p>
+
+        <div class="product-bottom">
+
+            <div class="price">
+                ₹{{ '%.2f'|format(p['price']) }}
+                <small>/ {{ p['unit'] }}</small>
+            </div>
+
+            <form
+                method="post"
+                action="{{ url_for('add_to_cart', product_id=p['id']) }}"
+            >
+                <input type="hidden" name="qty" value="1">
+
+                <button
+                    class="quick-add"
+                    type="submit"
+                    aria-label="Add {{ p['name'] }} to cart"
+                >
+                    +
+                </button>
+            </form>
+
+        </div>
+    </div>
+
+</article>

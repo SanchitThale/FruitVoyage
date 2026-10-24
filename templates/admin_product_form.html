@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ 'Edit' if item else 'Add' }} Product | Fine Imports
+{% endblock %}
+
+{% block body %}
+
+<main class="container">
+
+    <section class="form-card">
+
+        <div class="eyebrow">Catalogue editor</div>
+
+        <h1 style="font-size: 2.7rem">
+            {{ 'Edit product' if item else 'Add a product' }}
+        </h1>
+
+        <p class="muted">
+            Add a product photo, update its details,
+            and choose whether to feature it.
+        </p>
+
+        <form method="post" enctype="multipart/form-data">
+
+            <div class="form-group">
+                <label for="name">Product name *</label>
+
+                <input class="field"
+                       id="name"
+                       name="name"
+                       required
+                       value="{{ item['name'] if item else '' }}">
+            </div>
+
+            <div class="form-grid">
+
+                <div class="form-group">
+                    <label for="category">Category *</label>
+
+                    <select id="category" name="category">
+
+                        <option value="fruit"
+                            {{ 'selected' if not item or
+                            item['category'] == 'fruit' else '' }}>
+                            Fruit
+                        </option>
+
+                        <option value="cheese"
+                            {{ 'selected' if item and
+                            item['category'] == 'cheese' else '' }}>
+                            Cheese
+                        </option>
+
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="origin">Origin</label>
+
+                    <input class="field"
+                           id="origin"
+                           name="origin"
+                           value="{{ item['origin'] if item else '' }}"
+                           placeholder="e.g. USA">
+                </div>
+
+                <div class="form-group">
+                    <label for="price">Price (₹) *</label>
+
+                    <input class="field"
+                           id="price"
+                           name="price"
+                           type="number"
+                           min="0"
+                           step="0.01"
+                           required
+                           value="{{ item['price'] if item else '0.00' }}">
+                </div>
+
+                <div class="form-group">
+                    <label for="unit">Unit</label>
+
+                    <input class="field"
+                           id="unit"
+                           name="unit"
+                           value="{{ item['unit'] if item else 'kg' }}"
+                           placeholder="kg, 250 g, each">
+                </div>
+
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+
+                <textarea id="description"
+                          name="description"
+                          rows="4">{{ item['description'] if item else '' }}</textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="image">Upload product photo</label>
+
+                <input class="field"
+                       id="image"
+                       name="image"
+                       type="file"
+                       accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+
+                <small class="muted">
+                    PNG, JPG, JPEG or WEBP. Maximum 8 MB.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label for="image_url">
+                    Or image path / URL
+                </label>
+
+                <input class="field"
+                       id="image_url"
+                       name="image_url"
+                       placeholder="images/oranges.jpg or https://...">
+            </div>
+
+            {% if item and item['image'] %}
+                <p class="muted">
+                    Current image: {{ item['image'] }}
+                </p>
+            {% endif %}
+
+            <div class="check-row">
+
+                <label>
+                    <input type="checkbox"
+                           name="featured"
+                           {{ 'checked' if item and
+                           item['featured'] else '' }}>
+                    Feature on homepage
+                </label>
+
+                <label>
+                    <input type="checkbox"
+                           name="active"
+                           {{ 'checked' if not item or
+                           item['active'] else '' }}>
+                    Product is active
+                </label>
+
+            </div>
+
+            <div style="display: flex; gap: 10px; flex-wrap: wrap">
+
+                <button class="btn" type="submit">
+                    Save product →
+                </button>
+
+                <a class="btn secondary"
+                   href="{{ url_for('admin_dashboard') }}">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+{% endblock %}
