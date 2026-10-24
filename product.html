@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {{ p['name'] }} | Fine Imports
+{% endblock %}
+
+{% block body %}
+
+<main class="container">
+
+    <div class="product-detail">
+
+        <div class="detail-image">
+
+            {% if p['image'] %}
+                <img
+                    src="{{ url_for('static', filename=p['image']) }}"
+                    alt="{{ p['name'] }}"
+                >
+            {% else %}
+                <div class="image-placeholder">
+                    {{ '🧀' if p['category'] == 'cheese' else '🍎' }}
+                </div>
+            {% endif %}
+
+        </div>
+
+        <div class="detail-copy">
+
+            <div class="eyebrow">
+                {{ p['category'] }} · {{ p['origin'] }}
+            </div>
+
+            <h1>{{ p['name'] }}</h1>
+
+            <p class="price">
+                ₹{{ '%.2f'|format(p['price']) }}
+                <small>/ {{ p['unit'] }}</small>
+            </p>
+
+            <p class="muted">{{ p['description'] }}</p>
+
+            <form class="inline-form"
+                  method="post"
+                  action="{{ url_for('add_to_cart', product_id=p['id']) }}">
+
+                <input class="field"
+                       type="number"
+                       name="qty"
+                       value="1"
+                       min="1"
+                       max="99"
+                       aria-label="Quantity">
+
+                <button class="btn" type="submit">
+                    Add to cart →
+                </button>
+
+            </form>
+
+            <p style="margin-top: 18px">
+                <a class="text-link" href="{{ url_for('shop') }}">
+                    ← Back to collection
+                </a>
+            </p>
+
+        </div>
+
+    </div>
+
+</main>
+
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}Shop | Fine Imports{% endblock %}
+
+{% block body %}
+
+<main class="container shop-page">
+
+    <div class="page-heading">
+        <div class="eyebrow">The collection</div>
+        <h1>Shop the good stuff.</h1>
+        <p class="muted">
+            Explore our current selection of fruits and speciality foods.
+        </p>
+    </div>
+
+    <form class="search-form"
+          method="get"
+          action="{{ url_for('shop') }}">
+
+        <input
+            class="field"
+            type="search"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search products..."
+        >
+
+        <button class="btn" type="submit">Search</button>
+
+    </form>
+
+    <div class="filters">
+
+        <a
+            class="filter {{ 'active' if not category else '' }}"
+            href="{{ url_for('shop', q=query) }}"
+        >
+            All items
+        </a>
+
+        <a
+            class="filter {{ 'active' if category == 'fruit' else '' }}"
+            href="{{ url_for('shop', category='fruit', q=query) }}"
+        >
+            🍎 Fruits
+        </a>
+
+        <a
+            class="filter {{ 'active' if category == 'cheese' else '' }}"
+            href="{{ url_for('shop', category='cheese', q=query) }}"
+        >
+            🧀 Cheese
+        </a>
+
+    </div>
+
+    <div class="product-grid">
+
+        {% for p in products %}
+            {% include "_card.html" %}
+        {% else %}
+
+            <div class="empty-state">
+                <div class="icon">🧺</div>
+                <h2>No matching products</h2>
+                <p>Try another search or category.</p>
+
+                <a class="btn" href="{{ url_for('shop') }}">
+                    See all products
+                </a>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</main>
+
+{% endblock %}

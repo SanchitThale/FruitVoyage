@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Your Cart | Fine Imports{% endblock %}
+
+{% block body %}
+
+<main class="container section">
+
+    <div class="page-heading">
+        <div class="eyebrow">Almost yours</div>
+        <h1>Your cart.</h1>
+    </div>
+
+    {% if items %}
+
+    <div style="overflow-x: auto">
+
+        <table class="cart-table">
+
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Qty</th>
+                    <th>Subtotal</th>
+                    <th></th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for i in items %}
+
+                <tr>
+                    <td>
+                        <strong>{{ i.product['name'] }}</strong>
+                        <div class="muted">
+                            {{ i.product['origin'] }}
+                        </div>
+                    </td>
+
+                    <td>{{ i.qty }}</td>
+
+                    <td>
+                        ₹{{ '%.2f'|format(i.subtotal) }}
+                    </td>
+
+                    <td>
+                        <form method="post"
+                              action="{{ url_for(
+                                  'remove_from_cart',
+                                  product_id=i.product['id']
+                              ) }}">
+                            <button class="text-link" type="submit">
+                                Remove
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="cart-summary">
+
+        <div class="summary-line">
+            <span>Total</span>
+            <span>₹{{ '%.2f'|format(total) }}</span>
+        </div>
+
+        <button class="btn" disabled>
+            Checkout coming soon
+        </button>
+
+        <p class="muted" style="font-size: .85rem; margin-top: 12px">
+            Online payments and order processing are not set up yet.
+        </p>
+
+    </div>
+
+    {% else %}
+
+    <div class="empty-state">
+        <div class="icon">🧺</div>
+        <h2>Your cart is taking a little break.</h2>
+        <p class="muted">Add something delicious to get started.</p>
+
+        <a class="btn" href="{{ url_for('shop') }}">
+            Browse products →
+        </a>
+    </div>
+
+    {% endif %}
+
+</main>
+
+{% endblock %}

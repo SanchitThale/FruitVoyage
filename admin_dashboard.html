@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard | Fine Imports{% endblock %}
+
+{% block body %}
+
+<main class="container admin-shell">
+
+    <div class="admin-top">
+
+        <div>
+            <div class="eyebrow">Store management</div>
+
+            <h1 style="font-size: clamp(2.2rem, 4vw, 3.5rem);
+                       margin-bottom: 5px">
+                Your dashboard.
+            </h1>
+
+            <p class="muted">
+                Signed in as {{ session.get('admin_username') }}.
+                Manage products and images.
+            </p>
+        </div>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap">
+
+            <a class="btn"
+               href="{{ url_for('admin_product_form') }}">
+                + Add product
+            </a>
+
+            <form method="post"
+                  action="{{ url_for('admin_logout') }}">
+                <button class="btn secondary" type="submit">
+                    Sign out
+                </button>
+            </form>
+
+        </div>
+
+    </div>
+
+    <div class="admin-stats">
+
+        <div class="stat">
+            <strong>{{ active_count }}</strong>
+            <span>Active products</span>
+        </div>
+
+        <div class="stat">
+            <strong>{{ fruit_count }}</strong>
+            <span>Fruit listings</span>
+        </div>
+
+        <div class="stat">
+            <strong>{{ cheese_count }}</strong>
+            <span>Cheese listings</span>
+        </div>
+
+    </div>
+
+    <div class="section-head">
+        <h2>Product catalogue</h2>
+        <span class="muted">
+            {{ products|length }} total records
+        </span>
+    </div>
+
+    <div class="admin-table-wrap">
+
+        <table class="admin-table">
+
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for p in products %}
+
+                <tr>
+
+                    <td>
+                        <strong>{{ p['name'] }}</strong>
+                        <div class="muted">{{ p['origin'] }}</div>
+                    </td>
+
+                    <td>{{ p['category']|capitalize }}</td>
+
+                    <td>
+                        ₹{{ '%.2f'|format(p['price']) }}
+                        / {{ p['unit'] }}
+                    </td>
+
+                    <td>
+                        {{ 'Active' if p['active'] else 'Hidden' }}
+
+                        {% if p['featured'] %}
+                            · Featured
+                        {% endif %}
+                    </td>
+
+                    <td>
+
+                        <div class="admin-actions">
+
+                            <a class="btn secondary small"
+                               href="{{ url_for(
+                                   'admin_product_form',
+                                   product_id=p['id']
+                               ) }}">
+                                Edit
+                            </a>
+
+                            <form method="post"
+                                  action="{{ url_for(
+                                      'admin_delete_product',
+                                      product_id=p['id']
+                                  ) }}"
+                                  onsubmit="return confirm(
+                                      'Permanently delete this product?'
+                                  )">
+
+                                <button class="btn danger small"
+                                        type="submit">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+                    <td colspan="5">
+                        No products yet. Add your first product.
+                    </td>
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</main>
+
+{% endblock %}
