@@ -71,7 +71,10 @@
             <span>Total</span>
             <span>₹{{ '%.2f'|format(total) }}</span>
         </div>
-
+<a href="{{ url_for('checkout') }}"
+   class="btn btn-success btn-lg w-100">
+    Proceed to Checkout
+</a>
         <button class="btn" disabled>
             Checkout coming soon
         </button>

@@ -245,7 +245,14 @@ def shop():
         query=query
     )
 
+import os
+from urllib.parse import quote
+from datetime import datetime
 
+WHATSAPP_NUMBER = os.environ.get(
+    "WHATSAPP_NUMBER",
+    "917798070377"
+)
 # ---------------- PRODUCT DETAILS ----------------
 
 @app.route("/product/<int:product_id>")
@@ -346,7 +353,78 @@ def remove_from_cart(product_id):
     session["cart"] = cart_data
 
     return redirect(url_for("cart"))
+@app.route("/checkout")
+def checkout():
+    cart_data = session.get("cart", {})
+    items = []
+    total = 0
 
+    if not cart_data:
+        flash("Your cart is empty.", "error")
+        return redirect(url_for("shop"))
+
+    with connect_db() as con:
+        for product_id, qty in cart_data.items():
+            product = con.execute(
+                """
+                SELECT id, name, price
+                FROM products
+                WHERE id = ? AND active = 1
+                """,
+                (int(product_id),)
+            ).fetchone()
+
+            if product:
+                subtotal = float(product["price"]) * int(qty)
+                total += subtotal
+
+                items.append({
+                    "name": product["name"],
+                    "price": float(product["price"]),
+                    "qty": int(qty),
+                    "subtotal": subtotal
+                })
+
+    if not items:
+        flash("No valid products found in your cart.", "error")
+        return redirect(url_for("shop"))
+
+    order_id = datetime.now().strftime("%Y%m%d%H%M%S")
+
+    bill_message = [
+        "*FRUITVOYAGE - E-BILL*",
+        f"Order ID: FV-{order_id}",
+        f"Date: {datetime.now().strftime('%d-%m-%Y %I:%M %p')}",
+        "",
+        "*Order Details:*"
+    ]
+
+    for item in items:
+        bill_message.append(
+            f"{item['name']} x {item['qty']} "
+            f"= Rs. {item['subtotal']:.2f}"
+        )
+
+    bill_message.extend([
+        "",
+        f"*TOTAL: Rs. {total:.2f}*",
+        "",
+        "Please confirm this order.",
+        "Thank you for shopping with FruitVoyage!"
+    ])
+
+    whatsapp_url = (
+        f"https://wa.me/{WHATSAPP_NUMBER}"
+        f"?text={quote(chr(10).join(bill_message))}"
+    )
+
+    return render_template(
+        "checkout.html",
+        items=items,
+        total=total,
+        order_id=f"FV-{order_id}",
+        whatsapp_url=whatsapp_url
+    )
 
 # ---------------- ABOUT PAGE ----------------
 
